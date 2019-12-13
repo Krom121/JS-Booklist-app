@@ -11,20 +11,8 @@ class Book {
 class UI {
 
     static displayBooks(){
-        const StoreBooks = [
-            {
-                title: 'Book One',
-                author: 'John Doe',
-                isbn: '3434434'
-            },
-            {
-                title: 'Book Two',
-                author: 'Steve Doe',
-                isbn: '3434434'
-            }
-        ];
-
-        const books = StoreBooks;
+       
+        const books = Store.getBooks();
 
         books.forEach((book) => UI.addBookToList(book));
     }
@@ -69,6 +57,39 @@ class UI {
 }
 
 // Store Class handles logic for local storage
+class Store {
+    static getBooks() {
+        let books;
+        if(localStorage.getItem('books') === null) {
+            books = [];  
+        } else {
+            books = JSON.parse(localStorage.getItem('books'));
+        }
+
+        return books;
+    }
+
+    static addBook(book) {
+        const books = Store.getBooks();
+
+        books.push(book);
+
+        localStorage.setItem('books', JSON.stringify(books));
+    }
+
+    static removeBook(isbn) {
+        const books = Store.getBooks();
+
+        books.forEach((book, index) => {
+            if(book.isbn === isbn) {
+                books.splice(index, 1);
+            }
+        });
+
+        localStorage.setItem('books', JSON.stringify(books));
+    }
+}
+
 
 // Events to display a book in the list
 document.addEventListener('DOMContentLoaded', UI.displayBooks);
@@ -95,6 +116,9 @@ document.querySelector('#book-form').addEventListener('submit', (e) => {
         // Add book to list
         UI.addBookToList(book);
 
+        // add a book to strage
+        Store.addBook(book);
+
         // Successfully added a book alert
         UI.showAlert('Your book has been added', 'success');
 
@@ -107,7 +131,11 @@ document.querySelector('#book-form').addEventListener('submit', (e) => {
 // Event to delete a book from the list
  document.querySelector('#book-list').addEventListener('click', (e) => {
     
+    // remove book form frontend
     UI.deleteBook(e.target);
+
+    // remove book from storage
+    Store.removeBook(e.target.parentElement.previousElementSibling.textContent);
 
     // Successfully deleted a book alert
      UI.showAlert('Your book has been deleted', 'success');
