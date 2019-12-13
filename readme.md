@@ -14,4 +14,4 @@ All books are saved to local storage and can be deleted from local storage.
 
 [To view this project and add your own book list please follow or copy and paste the link below into your browser:]
 
-(<https://krom121.github.io/JS-Booklist-app/.)>
+<https://krom121.github.io/JS-Booklist-app/.>
